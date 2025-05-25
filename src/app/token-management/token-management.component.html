@@ -1,0 +1,14 @@
+<div *ngIf="!credentialsService.isAuthenticated">
+  <p>Вы не авторизованы</p>
+  <button (click)="redirectToLogin()">Авторизоваться</button>
+</div>
+<div *ngIf="credentialsService.isAuthenticated">
+  <button (click)="onGenerate()">Generate Token</button>
+  <div *ngIf="loading$ | async">Загрузка...</div>
+  <div *ngIf="error$ | async as error" style="color: red;">{{ error }}</div>
+  <ul>
+    <li *ngFor="let token of tokens$ | async">
+      {{ token.api_token }}
+    </li>
+  </ul>
+</div>

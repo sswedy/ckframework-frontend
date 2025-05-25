@@ -1,0 +1,104 @@
+openapi: 3.0.3
+info:
+  title: key manager microservice
+  description: key manager microservice
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080'
+    description: Local debug server
+paths:
+  /v1/token/generate:
+    get:
+      summary: "Generate api token"
+      description: "Generate api token for service"
+      operationId: generateToken
+      tags:
+        - api_token
+      security:
+        - bearerHttpAuthentication: [ ]
+      responses:
+        200:
+          description: "Token successfully generated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiTokenDto"
+        403:
+          description: "Wrong password or email"
+          content:
+            application/json:
+              schema:
+                $ref: "./common.yaml#/components/schemas/ErrorDto"
+        default:
+          $ref: "./common.yaml#/components/responses/UnexpectedErrorResponse"
+  /v1/token:
+    get:
+      summary: Get all user tokens
+      description: Get all user tokens
+      operationId: getTokens
+      tags:
+        - api_token
+      security:
+        - bearerHttpAuthentication: [ ]
+      responses:
+        200:
+          description: "The list of all generated tokens"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetApiTokensResponse"
+        403:
+          description: "Project not found"
+          content:
+            application/json:
+              schema:
+                $ref: "./common.yaml#/components/schemas/ErrorDto"
+        default:
+          $ref: "./common.yaml#/components/responses/UnexpectedErrorResponse"
+
+  /v1/token/jwks:
+    get:
+      description: Get jwks to verify the token jwt signature
+      operationId: getJwks
+      tags:
+        - api_token
+      responses:
+        200:
+          description: "jwks body"
+          content:
+            application/json:
+              schema:
+                type: string
+                example: {'keys': [...]}
+        default:
+          $ref: "./common.yaml#/components/responses/UnexpectedErrorResponse"
+
+
+components:
+  securitySchemes:
+    bearerHttpAuthentication:
+      description: Bearer token using a JWT
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    ApiTokenDto:
+      description: Api token dto
+      properties:
+        api_token:
+          description: "Signed jwt token"
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+      required:
+        - api_token
+    GetApiTokensResponse:
+      description: List of api tokens
+      properties:
+        tokens:
+          description: "Signed jwt token"
+          type: array
+          items:
+            $ref: "#/components/schemas/ApiTokenDto"
+      required:
+        - api_token
