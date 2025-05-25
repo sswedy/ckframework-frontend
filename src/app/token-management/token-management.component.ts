@@ -29,7 +29,7 @@ export class TokenManagementComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    if (!this.credentialsService.isAuthenticated()) {
+    if (!this.credentialsService.isAuthenticated) {
       this.router.navigate(['/auth-error']);
     }
   }
