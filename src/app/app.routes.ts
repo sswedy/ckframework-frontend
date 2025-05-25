@@ -4,7 +4,9 @@ import {TokenManagementComponent} from "./token-management/token-management.comp
 import {AuthErrorComponent} from "./auth-error/auth-error.component";
 
 export const routes: Routes = [
+  { path: '', redirectTo: 'token-management', pathMatch: 'full' },
   { path: 'auth-callback', component: AuthCallbackComponent },
   { path: 'token-management', component: TokenManagementComponent },
   { path: 'auth-error', component: AuthErrorComponent },
+  { path: '**', redirectTo: 'token-management' }
 ];
